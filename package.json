@@ -15,9 +15,16 @@
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
+    "fs": "0.0.1-security",
+    "fs-extra": "^8.0.1",
+    "is-image-url": "^1.1.8",
+    "jsdom": "^15.1.1",
     "mongoose": "^5.4.19",
+    "node-horseman": "^3.3.0",
     "nodemon": "^1.18.10",
     "passport": "^0.4.0",
-    "passport-jwt": "^4.0.0"
+    "passport-jwt": "^4.0.0",
+    "phantomjs": "^1.9.8",
+    "request": "^2.88.0"
   }
 }

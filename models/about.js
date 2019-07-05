@@ -14,6 +14,12 @@ const aboutSchema = new Schema({
     type: String,
     required: [true, 'text is required']
   },
+  linkedinLink: {
+    type: String
+  },
+  githubLink: {
+    type: String
+  },
   userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' }
 });
 

@@ -14,6 +14,10 @@ const contactSchema = new Schema({
     type: String,
     required: [true, 'email is required']
   },
+  isVisible: {
+    type: Boolean,
+    default: true
+  },
   userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' }
 });
 

@@ -7,6 +7,7 @@ const projectSchema = new Schema({
   readme: { type: String },
   projectLanguage: { type: String },
   isEdited: { type: Boolean, default: false },
+  projectUrl: { type: String, required: [true, 'projectUrl is required'] },
   userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' }
 });
 

@@ -47,7 +47,10 @@ const parseGitHub = async () => {
           .then(async body => {
             const projectItem = {
               projectName: projectInfo.projectName,
-              projectLanguage: projectInfo.projectLanguage
+              projectLanguage: projectInfo.projectLanguage,
+              projectUrl: `https://github.com/mark-likhtar/${
+                projectInfo.projectName
+              }`
             };
 
             const dom = new JSDOM(body);
@@ -97,9 +100,6 @@ const parseGitHub = async () => {
               ...projectItem,
               userId: '5d0757a890cf360ca9841ba2'
             });
-
-            console.log(project);
-
             project.save();
           })
           .close();

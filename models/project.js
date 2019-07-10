@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const projectSchema = new Schema({
-  image: { type: Buffer },
+  image: { type: String },
   projectName: { type: String, required: [true, 'projectName is required'] },
   readme: { type: String },
   projectLanguage: { type: String },

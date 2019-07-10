@@ -7,13 +7,13 @@ const Project = require('../models/project');
 
 const horseman = new Horseman();
 
-const parseGitHub = async () => {
+const parseGitHub = async user => {
   await horseman
     .userAgent(
       'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0'
     )
     .viewport(1920, 1080)
-    .open('https://github.com/mark-likhtar?tab=repositories')
+    .open(`https://github.com/${user}?tab=repositories`)
     .waitForSelector('#user-repositories-list', { timeout: 10000 })
     .html('#user-repositories-list')
     .then(async body => {
@@ -41,14 +41,14 @@ const parseGitHub = async () => {
             'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0'
           )
           .viewport(1920, 1080)
-          .open(`https://github.com/mark-likhtar/${projectInfo.projectName}`)
+          .open(`https://github.com/${user}/${projectInfo.projectName}`)
           .waitForSelector('.file-wrap', { timeout: 100000 })
           .html('.file-wrap')
           .then(async body => {
             const projectItem = {
               projectName: projectInfo.projectName,
               projectLanguage: projectInfo.projectLanguage,
-              projectUrl: `https://github.com/mark-likhtar/${
+              projectUrl: `https://github.com/${user}/${
                 projectInfo.projectName
               }`
             };
@@ -66,24 +66,26 @@ const parseGitHub = async () => {
               portfolioSelector &&
               isImageUrl(`https://github.com/${portfolioSelector.href}`)
             ) {
-              const imgPath = `https://raw.githubusercontent.com/mark-likhtar/${
+              const imgPath = `https://raw.githubusercontent.com/${user}/${
                 projectInfo.projectName
               }/master/PORTFOLIO.png`;
-              projectItem.image = await new Promise((resolve, reject) => {
-                request.get(imgPath, (err, res, body) => {
-                  if (err) {
-                    return reject(err);
-                  }
+              projectItem.image = imgPath;
 
-                  resolve(body);
-                });
-              });
+              // await new Promise((resolve, reject) => {
+              //   request.get(imgPath, (err, res, body) => {
+              //     if (err) {
+              //       return reject(err);
+              //     }
+
+              //     resolve(body);
+              //   });
+              // });
             }
 
             if (readmeSelector) {
               projectItem.readme = await new Promise((resolve, reject) => {
                 request.get(
-                  `https://raw.githubusercontent.com/mark-likhtar/${
+                  `https://raw.githubusercontent.com/${user}/${
                     projectInfo.projectName
                   }/master/README.md`,
                   (err, res, body) => {
@@ -101,11 +103,10 @@ const parseGitHub = async () => {
               userId: '5d0757a890cf360ca9841ba2'
             });
             project.save();
-          })
-          .close();
+          });
       }
     })
-    .close();
+    .catch(err => console.log(err));
 };
 
 module.exports = parseGitHub;

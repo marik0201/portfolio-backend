@@ -1,9 +1,12 @@
 const express = require('express');
 const multer = require('multer');
+const request = require('request');
 const adminRouter = express.Router();
 const Contact = require('../models/contact');
+const Project = require('../models/project');
 const About = require('../models/about');
 const upload = require('../configs/multer-storage');
+const parseGitHub = require('../services/git-parsing');
 
 adminRouter.post('/address', async (req, res) => {
   const address = req.body.address;
@@ -153,6 +156,93 @@ adminRouter.post('/about/text', async (req, res) => {
   return res.status(200).json({
     message: 'text was updated'
   });
+});
+
+adminRouter.post('/projects/git-user', async (req, res) => {
+  const username = req.body.username;
+
+  request.get(`https://github.com/${username}`, (err, response, body) => {
+    if (err) {
+      return res.status(500);
+    }
+
+    if (response.statusCode !== 200) {
+      return res.status(400).json({
+        message: 'wrong github name'
+      });
+    }
+  });
+
+  try {
+    await Project.remove({ isEdited: false });
+    await parseGitHub(username);
+
+    return res.json({
+      message: 'Git link was changed'
+    });
+  } catch (error) {
+    res.status(500);
+  }
+});
+
+adminRouter.post('/projects/:id/image', async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const imageLink = req.body.imageLink;
+
+    await Project.findByIdAndUpdate(projectId, {
+      image: imageLink,
+      isEdited: true
+    });
+
+    res.json({
+      message: 'project image was edited'
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+});
+
+adminRouter.post('/projects/:id/name', async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const projectName = req.body.projectName;
+
+    await Project.findByIdAndUpdate(projectId, {
+      projectName,
+      isEdited: true
+    });
+
+    res.json({
+      message: 'project name was edited'
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+});
+
+adminRouter.post('/projects/:id/readme', async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const readme = req.body.readme;
+
+    await Project.findByIdAndUpdate(projectId, {
+      readme,
+      isEdited: true
+    });
+
+    res.json({
+      message: 'project readme was edited'
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
 });
 
 module.exports = adminRouter;

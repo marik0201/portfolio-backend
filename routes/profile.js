@@ -97,4 +97,28 @@ profileRouter.post('/email', async (req, res) => {
   });
 });
 
+profileRouter.get('/projects/names', async (req, res) => {
+  try {
+    const projectNames = await Project.find({}, { projectName: 1 });
+    return res.json({
+      projectNames
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+profileRouter.get('/projects/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const project = await Project.findById(id);
+
+    return res.json({
+      project
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = profileRouter;

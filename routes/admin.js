@@ -175,7 +175,10 @@ adminRouter.post('/projects/git-user', async (req, res) => {
 
   try {
     await Project.remove({ isEdited: false });
-    await parseGitHub(username);
+    const parsedProjects = await parseGitHub(username);
+    for (const project of parsedProjects) {
+      project.save();
+    }
 
     return res.json({
       message: 'Git link was changed'

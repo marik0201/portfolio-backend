@@ -4,9 +4,9 @@ const ExtractJwt = passportJWT.ExtractJwt;
 const tokenConfig = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('JWT'),
   secretOrKey: 'secretKey',
-  tokenLife: '15m',
+  tokenLife: '30m',
   refreshTokenKey: 'accessSecretKey',
-  refreshTokenLife: '2h'
+  refreshTokenLife: '10h'
 };
 
 module.exports = tokenConfig;

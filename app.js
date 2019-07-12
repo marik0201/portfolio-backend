@@ -21,8 +21,6 @@ app.use(
 );
 app.use(routes);
 
-// parseGitHub();
-
 app.listen(PORT, () => {
   console.log(`listening on http://localhost:${PORT}`);
 });

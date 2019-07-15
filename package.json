@@ -16,7 +16,6 @@
     "cors": "^2.8.5",
     "cryptr": "^4.0.2",
     "express": "^4.16.4",
-    "express-session": "^1.16.2",
     "fs": "0.0.1-security",
     "fs-extra": "^8.0.1",
     "is-image-url": "^1.1.8",

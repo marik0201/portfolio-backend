@@ -1,4 +1,4 @@
-/config/logs
 /node_modules 
 /.vscode
 /package-lock.json
+/configs/smtp.js

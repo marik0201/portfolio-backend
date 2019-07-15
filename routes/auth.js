@@ -4,7 +4,6 @@ const authRouter = express.Router();
 const tokenConfig = require('../configs/token');
 const User = require('../models/user');
 const Token = require('../models/token');
-const auth = require('../middlewares/auth');
 const jwt = require('jsonwebtoken');
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr('secretKeyRaccon');
@@ -52,18 +51,6 @@ authRouter.post('/login', async (req, res) => {
       message: 'Wrong login or password'
     });
   }
-
-  //   await User.findByIdAndUpdate(user._id, { refreshToken });
-
-  //   return res.json({
-  //     token,
-  //     refreshToken
-  //   });
-  // } catch (error) {
-  //   return res.status(400).json({
-  //     message: 'Wrong login or password'
-  //   });
-  // }
 });
 
 authRouter.post('/token', async (req, res) => {

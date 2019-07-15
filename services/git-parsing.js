@@ -4,6 +4,7 @@ const { JSDOM } = jsdom;
 const isImageUrl = require('is-image-url');
 const request = require('request').defaults({ encoding: null });
 const Project = require('../models/project');
+const User = require('../models/user');
 
 const horseman = new Horseman();
 
@@ -24,19 +25,17 @@ const parseGitHub = async user => {
     const dom = new JSDOM(repositoriesBody);
     const document = dom.window.document;
     const projects = Array.from(document.querySelectorAll('ul > li'));
-    const projectsInfo = [];
     const parsedProjects = [];
 
     for (const project of projects) {
-      projectsInfo.push({
+      const projectItem = {
         projectName: project.querySelector('a').innerHTML.replace(/\s+/g, ''),
         projectLanguage: project.querySelector(
           'span[itemprop="programmingLanguage"]'
-        ).innerHTML
-      });
-    }
+        ).innerHTML,
+        projectUrl: `https://github.com/${user}/${this.projectName}`
+      };
 
-    for (const projectInfo of projectsInfo) {
       const horsemanProject = new Horseman();
 
       const projectBody = await horsemanProject
@@ -44,15 +43,9 @@ const parseGitHub = async user => {
           'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0'
         )
         .viewport(1920, 1080)
-        .open(`https://github.com/${user}/${projectInfo.projectName}`)
+        .open(`https://github.com/${user}/${projectItem.projectName}`)
         .waitForSelector('.file-wrap', { timeout: 100000 })
         .html('.file-wrap');
-
-      const projectItem = {
-        projectName: projectInfo.projectName,
-        projectLanguage: projectInfo.projectLanguage,
-        projectUrl: `https://github.com/${user}/${projectInfo.projectName}`
-      };
 
       const dom = new JSDOM(projectBody);
       const document = dom.window.document;
@@ -64,7 +57,7 @@ const parseGitHub = async user => {
         isImageUrl(`https://github.com/${portfolioSelector.href}`)
       ) {
         const imgPath = `https://raw.githubusercontent.com/${user}/${
-          projectInfo.projectName
+          projectItem.projectName
         }/master/PORTFOLIO.png`;
         projectItem.image = imgPath;
       }
@@ -73,7 +66,7 @@ const parseGitHub = async user => {
         projectItem.readme = await new Promise((resolve, reject) => {
           request.get(
             `https://raw.githubusercontent.com/${user}/${
-              projectInfo.projectName
+              projectItem.projectName
             }/master/README.md`,
             (err, res, body) => {
               if (err) {
@@ -85,12 +78,14 @@ const parseGitHub = async user => {
         });
       }
 
-      const project = new Project({
+      const userId = await User.findOne({}, { _id: 1 });
+
+      const parsedProject = new Project({
         ...projectItem,
-        userId: '5d0757a890cf360ca9841ba2'
+        userId
       });
 
-      parsedProjects.push(project);
+      parsedProjects.push(parsedProject);
     }
     return parsedProjects;
   } catch (error) {

@@ -21,7 +21,7 @@
     "is-image-url": "^1.1.8",
     "jest": "^24.8.0",
     "jsdom": "^15.1.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.4.19",
     "multer": "^1.4.1",
     "node-horseman": "^3.3.0",
